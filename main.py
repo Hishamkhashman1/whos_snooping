@@ -12,7 +12,8 @@ def main():
 
     print("Devices on the network:")
     for device in devices:
-        print(f"{device['ip']}  ->  {device['mac']}")
+        print(f"{device['ip']}  ->  {device['mac']}  ({device['vendor']})")
+
 
 if __name__ == "__main__":
     main()

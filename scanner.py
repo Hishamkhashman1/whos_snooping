@@ -1,6 +1,8 @@
 from scapy.all import ARP, Ether, srp
 import socket
 import ipaddress
+import requests
+
 
 def get_local_subnet():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -29,10 +31,43 @@ def scan_network(target_ip):
     for sent, received in result:
         devices.append({
             "ip": received.psrc,
-            "mac": received.hwsrc
-        })
+            "mac": received.hwsrc,
+            "vendor": get_vendor(received.hwsrc),
+            "hostname": get_hostname(received.psrc)
+            })
 
     return devices
+
+
+
+def is_random_mac(mac):
+    first_octet = int(mac.split(":")[0], 16)
+    return bool(first_octet & 0b10)
+
+
+
+def get_hostname(ip):
+    try:
+        return socket.gethostbyaddr(ip)[0]
+    except Exception:
+        return None
+
+def load_oui_db(path="oui.txt"):
+    db = {}
+    with open(path, "r", errors="ignore") as f:
+        for line in f:
+            if "(hex)" in line:
+                parts = line.split()
+                prefix = parts[0].replace("-", ":").lower()
+                vendor = " ".join(parts[2:])
+                db[prefix] = vendor
+    return db
+
+OUI_DB = load_oui_db()
+
+def get_vendor(mac):
+    prefix = mac.lower()[0:8]
+    return OUI_DB.get(prefix, "Unknown")
 
 
 if __name__ == "__main__":
