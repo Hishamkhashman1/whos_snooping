@@ -1,5 +1,5 @@
 #  Who’s Snooping?
-
+![app screenshot](app-screenshot.png)
 **Who’s Snooping** is a small, no-BS Python tool that shows you **who’s actually connected to your local network**.
 
 No hacking.
@@ -91,3 +91,4 @@ Open the UI:
 ```
 http://localhost:5173
 ```
+Have Fun!
